@@ -2,10 +2,14 @@ import React, { useEffect } from 'react';
 import { Phonebook } from './Phonebook/Phonebook';
 import { Contacts } from './Contacts/Contacts';
 import { Filter } from './Filter/Filter';
-import { actions } from '../redux/actions';
+import { actions } from '../redux/contacts/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectors } from '../redux/selectors';
-import { fetchContacts, addContact,removeContact } from '../redux/operations';
+import { selectors } from '../redux/contacts/selectors';
+import {
+  fetchContacts,
+  addContact,
+  removeContact,
+} from '../redux/contacts/operations';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -13,8 +17,9 @@ const App = () => {
   const contacts = useSelector(selectors.getContacts);
   const isLoading = useSelector(selectors.getContactsLoading);
   const error = useSelector(selectors.getContactsError);
+  
 
-  const handleSubmit = (name, phone) => {
+  const handleSubmit = (name, number) => {
     const isNameAlreadyExists = contacts.some(contact => contact.name === name);
 
     if (isNameAlreadyExists) {
@@ -24,7 +29,7 @@ const App = () => {
 
     const newContact = {
       name,
-      phone,
+      number,
     };
 
     dispatch(addContact(newContact));
@@ -38,37 +43,32 @@ const App = () => {
     dispatch(actions.setSearch(value));
   };
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, []);
 
   const normalizedFilter = search.toLowerCase();
-
   const visibleContacts = contacts.filter(
-    ({ name, phone }) =>
+    ({ name, number }) =>
       name.toLowerCase().includes(normalizedFilter) ||
-      `${phone}`.includes(normalizedFilter)
+      `${number}`.includes(normalizedFilter)
   );
 
-  console.log(error, 'this is error');
   return (
-    <div style={{ marginLeft: '30px' }}>
-      <h1 className="title">Phonebook</h1>
-      <Phonebook onSubmit={handleSubmit} />
-      <h1 className="title">Contacts</h1>
-      <Filter onChange={handleChange} filter={search} />
-      {isLoading && !error ? (
-        <p>Loading, please wait...</p>
-      ) : (
-        <Contacts
-          contacts={visibleContacts}
-          onChange={handleChange}
-          filter={search}
-          onDelete={handleDeleteContact}
-        />
-      )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+      <div style={{ marginLeft: '30px' }}>
+        <h1 className="title">Phonebook</h1>
+        <Phonebook onSubmit={handleSubmit} />
+        <h1 className="title">Contacts</h1>
+        <Filter onChange={handleChange} filter={search} />
+        {isLoading && !error ? (
+          <p>Loading, please wait...</p>
+        ) : (
+          <Contacts
+            contacts={visibleContacts}
+            onChange={handleChange}
+            filter={search}
+            onDelete={handleDeleteContact}
+          />
+        )}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+      </div>
   );
 };
 export default App;

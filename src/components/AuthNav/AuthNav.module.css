@@ -1,0 +1,27 @@
+
+.container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.register {
+  margin-right: 10px;
+  text-decoration: none;
+  color: #333; 
+  font-weight: bold;
+}
+
+.register:active {
+  color: #007bff; 
+}
+
+.logIn {
+  margin-right: 10px;
+  text-decoration: none;
+  color: #333; 
+  font-weight: bold;
+}
+
+.logIn:active {
+  color: #007bff; 
+}

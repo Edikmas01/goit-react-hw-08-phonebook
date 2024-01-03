@@ -2,21 +2,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateContact } from 'redux/operations';
+import { updateContact } from 'redux/contacts/operations';
 
-export const ContactsItem = ({ id, name, phone, onDelete }) => {
+export const ContactsItem = ({ id, name, number, onDelete }) => {
   const dispatch = useDispatch();
   const [edit, setEdit] = useState(false);
 
   const [currentName, setCurrentName] = useState(name);
-  const [currentPhone, setCurrentPhone] = useState(phone);
+  const [currentNumber, setCurrentNumber] = useState(number);
 
   const nameInputField = useRef(null);
 
-  console.log(nameInputField);
-
   const handleSaveContact = () => {
-    if (name === currentName && phone === currentPhone) {
+    if (name === currentName && number === setCurrentNumber) {
       setEdit(false);
       return;
     }
@@ -24,16 +22,16 @@ export const ContactsItem = ({ id, name, phone, onDelete }) => {
     const updatedContact = {
       id,
       name: currentName,
-      phone: currentPhone,
+      number: currentNumber,
     };
 
     dispatch(updateContact(updatedContact));
     setEdit(false);
   };
 
-  useEffect(() => {
-    console.log(nameInputField);
-  }, [nameInputField]);
+  // useEffect(() => {
+  //   console.log(nameInputField);
+  // }, [nameInputField]);
 
   return (
     <li
@@ -51,7 +49,7 @@ export const ContactsItem = ({ id, name, phone, onDelete }) => {
           border: 'none',
         }}
       >
-        {currentName}: {currentPhone}
+        {currentName}: {currentNumber}
       </div>
 
       <div>
@@ -75,8 +73,8 @@ export const ContactsItem = ({ id, name, phone, onDelete }) => {
             border: edit ? '1px solid #000' : 'none',
           }}
           type="text"
-          value={currentPhone}
-          onChange={e => setCurrentPhone(e.target.value)}
+          value={currentNumber}
+          onChange={e => setCurrentNumber(e.target.value)}
         />
       </div>
 
@@ -86,8 +84,6 @@ export const ContactsItem = ({ id, name, phone, onDelete }) => {
             onClick={() => {
               setEdit(true);
               nameInputField.current.focus();
-
-              console.log(nameInputField.current);
             }}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -106,7 +102,7 @@ export const ContactsItem = ({ id, name, phone, onDelete }) => {
           onClick={() => {
             if (edit) {
               setCurrentName(name);
-              setCurrentPhone(phone);
+              setCurrentNumber(number);
               return setEdit(false);
             }
             return onDelete(id);

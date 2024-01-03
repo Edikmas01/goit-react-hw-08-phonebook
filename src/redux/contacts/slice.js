@@ -5,6 +5,8 @@ import {
   updateContact,
   removeContact,
 } from './operations';
+import {logOut} from '../auth/operations'
+
 
 const contactsInitialState = {
   items: [],
@@ -31,52 +33,50 @@ const contactsSlice = createSlice({
       return state;
     },
   },
-  extraReducers: {
-    [fetchContacts.rejected]: handleRejected,
-    [fetchContacts.pending]: handlePending,
-    [fetchContacts.fulfilled]: (state, action) => {
+  extraReducers: (builder) => {
+    builder
+    .addCase(fetchContacts.rejected, handleRejected)
+    .addCase(fetchContacts.pending,handlePending)
+    .addCase(fetchContacts.fulfilled,(state, action) => {
       state.isLoading = false;
       state.error = null;
       state.items = action.payload;
-    },
-    [addContact.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-    [addContact.pending]: handlePending,
-    [addContact.fulfilled]: (state, action) => {
+    })
+    .addCase(addContact.rejected,handleRejected)
+    .addCase(addContact.pending,handlePending)
+    .addCase(addContact.fulfilled,(state, action) => {
       state.isLoading = false;
       state.error = null;
       state.items.push(action.payload);
-    },
-    [updateContact.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-    [updateContact.pending]: handlePending,
-    [updateContact.fulfilled]: (state, action) => {
+    }) 
+    .addCase(updateContact.rejected, handleRejected)
+    .addCase(updateContact.pending ,handlePending)
+    .addCase(updateContact.fulfilled, (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.items = state.items.map(item => {
         if (item.id === action.payload.id) {
           return action.payload;
         }
-
         return item;
       });
-    },
-    [removeContact.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-    [removeContact.pending]: handlePending,
-    [removeContact.fulfilled]: (state, action) => {
+    })
+    .addCase(removeContact.rejected ,handleRejected)
+    .addCase(removeContact.pending, handlePending)
+    .addCase(removeContact.fulfilled, (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.items = state.items.filter(
         contact => contact.id !== action.payload.id
       );
-    },
+    })
+    .addCase(logOut.pending ,handlePending)
+    .addCase(logOut.rejected ,handleRejected)
+    .addCase(logOut.fulfilled, (state) => {
+      state.error = null;
+      state.isLoading = false;
+      state.items = [];
+    })
   },
 });
 
@@ -91,7 +91,7 @@ const searchSlice = createSlice({
   },
 });
 
-export const reducers = {
+export const contactsReducers = {
   contacts: contactsSlice.reducer,
   search: searchSlice.reducer,
 };

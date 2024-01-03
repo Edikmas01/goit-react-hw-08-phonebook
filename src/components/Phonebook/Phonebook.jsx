@@ -1,25 +1,25 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import './Phonebook.css';
 
 export const Phonebook = ({ onSubmit }) => {
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
 
   const handleChange = e => {
     const { name, value } = e.target;
     if (name === 'name') {
-      setName(value)
+      setName(value);
     } else if (name === 'number') {
-      setPhone(value)
+      setNumber(value);
     }
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit(name, phone);
+    onSubmit(name, number);
 
     setName('');
-    setPhone('');
+    setNumber('');
   };
 
   return (
@@ -38,7 +38,7 @@ export const Phonebook = ({ onSubmit }) => {
       <h3 className="input-title">Number</h3>
       <input
         onChange={handleChange}
-        value={phone}
+        value={number}
         className="phonebook-input"
         type="tel"
         name="number"
